@@ -37,18 +37,10 @@ codex plugin add capable-plugin@capable-local
 
 ## 安装到 DeepSeek Harness Desktop
 
-先启动一次 Desktop 初始化 `desktop` profile，然后完全退出应用。使用 **Desktop 自带的** `dsh`（Windows 为 `dsh.cmd`），位于应用资源目录下的 `runtime/cli/bin/`。[Desktop 内置命令运行时](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.zh.md)
+可安装的产物目录是 **`dist/deepseek/`**。如果通过私有渠道分发，将这个目录整体打包，安装端下载并解压即可。
 
-在仓库根目录构建后，可用该命令安装本地目录：
+1. 在 DeepSeek Harness Desktop 打开 **插件（Plugins）→ 添加插件（Add plugin）**。
+2. 输入产物目录的**绝对路径**，指向直接包含 `package.json` 和 `cordis.patch.yml` 的那一层。例如 macOS 上的 `/Users/yourname/Downloads/capable-plugin/dist/deepseek`，或 Windows 上的 `C:\Users\yourname\Downloads\capable-plugin\dist\deepseek`。
+3. 安装完成后，按界面提示重启 Desktop，再打开新会话。
 
-```sh
-dsh plugin --profile desktop add "file:$PWD/dist/deepseek"
-```
-
-通过私有渠道分发时，在发布端运行 `npm pack ./dist/deepseek`，安装端下载生成的 `.tgz` 即可：
-
-```sh
-dsh plugin --profile desktop add /path/to/capable-plugin-deepseek-0.1.0.tgz
-```
-
-安装后重新打开 Desktop 并新建会话。插件通过 `agent/created` 注入 `core.md`，并注册包内的技能。添加技能并重新构建后，可在技能列表中查找对应技能。更新时重新安装新版产物并重启 Desktop。[技能发现](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill-filesystem/README.md)
+[Desktop 插件管理](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) · [添加插件支持绝对路径](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/README.md)
