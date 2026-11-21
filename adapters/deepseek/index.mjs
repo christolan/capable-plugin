@@ -12,7 +12,7 @@ export function apply(ctx) {
   ctx.on('agent/created', ({ agent }) => {
     agent.inject(createUserMessage({
       content: [{ type: 'text', text }],
-      source: { kind: 'plugin', plugin: name },
+      source: { kind: `plugin:${name}` },
     }));
   });
 
