@@ -85,7 +85,9 @@ try {
 
   await cp(join(root, 'adapters/deepseek/index.mjs'), join(deepseek, 'index.mjs'));
   await writeJson(join(deepseek, 'package.json'), {
-    name: deepseekName, version, description, type: 'module', exports: './index.mjs',
+    name: deepseekName, version,
+    description: `DeepSeek Harness Desktop 插件：${description}`,
+    type: 'module', exports: './index.mjs',
     files: ['index.mjs', 'core.md', 'skills', 'cordis.patch.yml'],
     keywords: ['dsh-plugin'],
     peerDependencies: {
