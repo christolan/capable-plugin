@@ -1,0 +1,4 @@
+/node_modules/
+/.capable-build-*/
+.DS_Store
+/dist/

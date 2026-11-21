@@ -1,0 +1,8 @@
+{
+  "name": "capable-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "个人开发规范与可复用技能",
+  "engines": { "node": ">=22" },
+  "scripts": { "build": "node scripts/build.mjs" }
+}
