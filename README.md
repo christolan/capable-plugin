@@ -6,10 +6,10 @@
 
 | 路径 | 用途 |
 | --- | --- |
-| [src/core.md](src/core.md) | 会话启动时由 hook 加载的通用开发规范。 |
+| [src/core.md](src/core.md) | 会话或子 Agent 启动时加载的通用开发规范。 |
 | [src/skills/personal/](src/skills/personal/) | 自建技能。 |
 | [src/skills/external/](src/skills/external/) | 引入的外部技能。随技能保存来源、固定版本和许可证。 |
-| [adapters/](adapters/) | 两个 harness 的运行时适配代码。 |
+| [adapters/](adapters/) | 两个 harness 各自的插件模板和打包入口。 |
 | [dist/](dist/) | 可安装的本地构建产物，已加入 Git 忽略规则。 |
 
 每个技能放在单独的 `<skill-name>/` 目录，包含 `SKILL.md`，YAML frontmatter 至少填写 `name` 和 `description`。目录名使用小写 kebab-case，并与 `name` 一致。自建与外部技能共用安装后的命名空间，目录名需唯一。脚本、示例和参考资料放在所属技能目录中。
@@ -22,7 +22,7 @@
 npm run build
 ```
 
-构建将 `core.md` 和完整技能目录复制到两个插件。修改后重新构建，并提交源文件。将需要按任务加载的细节写进技能，保持每次注入的核心规范简短。
+构建复制各 adapter 的 `template/`，用根目录 `package.json` 的信息填入插件名称、版本和描述，再加入 `core.md` 和完整技能目录。修改 hook、插件清单或运行时入口时，编辑对应的模板文件，重新构建并提交源文件。将需要按任务加载的细节写进技能，保持每次注入的核心规范简短。
 
 ## 安装到 Codex
 
@@ -33,7 +33,7 @@ codex plugin marketplace add "$PWD/dist"
 codex plugin add capable-plugin@capable-local
 ```
 
-如使用桌面端，也可从插件目录的 **Capable Local** 来源安装。启动 Codex 后用 `/hooks` 审阅并信任插件的 `SessionStart`，再开启新会话。该 hook 从安装目录读取 `core.md` 并返回完整的 `additionalContext`。添加技能并重新构建后，可在技能列表中查找对应技能。重新构建后，通过插件管理刷新安装的副本。[Codex 插件打包](https://developers.openai.com/plugins/build/plugins) · [Codex Hooks](https://developers.openai.com/docs/hooks)
+如使用桌面端，也可从插件目录的 **Capable Local** 来源安装。启动 Codex 后用 `/hooks` 审阅并信任插件的 `SessionStart` 和 `SubagentStart`，再开启新会话。两个 hook 分别在会话和子 Agent 启动时读取安装目录中的 `core.md`，并返回完整的 `additionalContext`。添加技能并重新构建后，可在技能列表中查找对应技能。重新构建后，通过插件管理刷新安装的副本。[Codex 插件打包](https://developers.openai.com/plugins/build/plugins) · [Codex Hooks](https://developers.openai.com/docs/hooks)
 
 ## 安装到 DeepSeek Harness Desktop
 

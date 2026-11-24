@@ -1,0 +1,20 @@
+{
+  "name": "capable-local",
+  "interface": {
+    "displayName": "Capable Local"
+  },
+  "plugins": [
+    {
+      "name": "{{name}}",
+      "source": {
+        "source": "local",
+        "path": "./codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "{{name}}",
+  "version": "{{version}}",
+  "description": "{{description}}",
+  "type": "module",
+  "exports": "./index.mjs",
+  "files": [
+    "index.mjs",
+    "core.md",
+    "skills",
+    "cordis.patch.yml"
+  ],
+  "keywords": [
+    "dsh-plugin"
+  ],
+  "peerDependencies": {
+    "@deepseek-ai/dsh-llm": "*",
+    "@deepseek-ai/dsh-skill-filesystem": "*"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
