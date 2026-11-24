@@ -1,11 +1,15 @@
 import { cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildCodex } from '../adapters/codex/build.mjs';
-import { buildDeepSeek } from '../adapters/deepseek/build.mjs';
+
+async function renderJsonTemplate(path, values) {
+  const template = await readFile(path, 'utf8');
+  const content = template.replace(/"\{\{(\w+)\}\}"/g, (_, key) => JSON.stringify(values[key]));
+  await writeFile(path, content);
+}
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const metadata = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
+const { name, version, description } = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 const src = join(root, 'src');
 const core = await readFile(join(src, 'core.md'));
 const skills = new Map();
@@ -36,15 +40,34 @@ const output = join(stage, 'dist');
 
 let keepStage = false;
 try {
-  for (const buildAdapter of [buildCodex, buildDeepSeek]) {
-    const target = await buildAdapter(output, metadata);
+  const templates = join(src, 'templates');
+  const copyOptions = {
+    recursive: true,
+    filter: (entry) => !entry.endsWith('/.DS_Store'),
+  };
+
+  const codex = join(output, 'codex');
+  await cp(join(templates, 'codex'), output, copyOptions);
+  await renderJsonTemplate(join(codex, '.codex-plugin', 'plugin.json'), { name, version, description });
+  await renderJsonTemplate(join(output, '.agents', 'plugins', 'marketplace.json'), { name });
+
+  const deepseek = join(output, 'deepseek');
+  await cp(join(templates, 'deepseek'), deepseek, copyOptions);
+  const deepseekName = `${name}-deepseek`;
+  await renderJsonTemplate(join(deepseek, 'package.json'), {
+    name: deepseekName,
+    version,
+    description: `DeepSeek Harness Desktop 插件：${description}`,
+  });
+  const patchPath = join(deepseek, 'cordis.patch.yml');
+  const patch = await readFile(patchPath, 'utf8');
+  await writeFile(patchPath, patch.replaceAll('{{name}}', () => deepseekName));
+
+  for (const target of [codex, deepseek]) {
     await mkdir(join(target, 'skills'));
     await writeFile(join(target, 'core.md'), core);
     for (const [skill, path] of skills) {
-      await cp(path, join(target, 'skills', skill), {
-        recursive: true,
-        filter: (entry) => !entry.endsWith('/.DS_Store'),
-      });
+      await cp(path, join(target, 'skills', skill), copyOptions);
     }
   }
 

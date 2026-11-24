@@ -9,7 +9,7 @@
 | [src/core.md](src/core.md) | 会话或子 Agent 启动时加载的通用开发规范。 |
 | [src/skills/personal/](src/skills/personal/) | 自建技能。 |
 | [src/skills/external/](src/skills/external/) | 引入的外部技能。随技能保存来源、固定版本和许可证。 |
-| [adapters/](adapters/) | 两个 harness 各自的插件模板和打包入口。 |
+| [src/templates/](src/templates/) | Codex 和 DeepSeek Harness Desktop 的插件模板。 |
 | [dist/](dist/) | 可安装的本地构建产物，已加入 Git 忽略规则。 |
 
 每个技能放在单独的 `<skill-name>/` 目录，包含 `SKILL.md`，YAML frontmatter 至少填写 `name` 和 `description`。目录名使用小写 kebab-case，并与 `name` 一致。自建与外部技能共用安装后的命名空间，目录名需唯一。脚本、示例和参考资料放在所属技能目录中。
@@ -22,7 +22,7 @@
 npm run build
 ```
 
-构建复制各 adapter 的 `template/`，用根目录 `package.json` 的信息填入插件名称、版本和描述，再加入 `core.md` 和完整技能目录。修改 hook、插件清单或运行时入口时，编辑对应的模板文件，重新构建并提交源文件。将需要按任务加载的细节写进技能，保持每次注入的核心规范简短。
+构建复制 `src/templates/` 下的两个平台模板，用根目录 `package.json` 的信息填入插件名称、版本和描述，再加入 `core.md` 和完整技能目录。修改 hook、插件清单或运行时入口时，编辑对应的模板文件，重新构建并提交源文件。将需要按任务加载的细节写进技能，保持每次注入的核心规范简短。
 
 ## 安装到 Codex
 
@@ -30,6 +30,13 @@ npm run build
 
 ```sh
 codex plugin marketplace add "$PWD/dist"
+codex plugin add capable-plugin@capable-local
+```
+
+如需更新插件，直接移除再安装即可
+
+```sh
+codex plugin remove capable-plugin@capable-local
 codex plugin add capable-plugin@capable-local
 ```
 
